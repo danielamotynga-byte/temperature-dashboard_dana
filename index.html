@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🌡️ Arduino Temperature Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        header {
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #4d96ff;
+        }
+        
+        .subtitle {
+            color: #a0a0c0;
+            margin-bottom: 20px;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .card h2 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #a0a0c0;
+        }
+        
+        .value {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .temperature {
+            color: #ff6b6b;
+        }
+        
+        .humidity {
+            color: #4d96ff;
+        }
+        
+        .last-update {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .info {
+            margin-top: 30px;
+            color: #a0a0c0;
+            font-size: 0.9rem;
+        }
+        
+        .device-id {
+            color: #6bcf7f;
+            font-weight: bold;
+        }
+        
+        .beeceptor-link {
+            color: #6c5ce7;
+            text-decoration: none;
+        }
+        
+        .beeceptor-link:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 600px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌡️ Arduino Temperature Dashboard</h1>
+            <p class="subtitle">Real-time monitoring for your IoT project</p>
+        </header>
+        
+        <div class="dashboard">
+            <div class="card">
+                <h2><i class="fas fa-thermometer-half"></i> CURRENT TEMPERATURE</h2>
+                <div id="temperature" class="value temperature">-- °C</div>
+                <p>DHT22 Sensor</p>
+            </div>
+            
+            <div class="card">
+                <h2><i class="fas fa-tint"></i> CURRENT HUMIDITY</h2>
+                <div id="humidity" class="value humidity">-- %</div>
+                <p>Relative humidity</p>
+            </div>
+        </div>
+        
+        <div class="last-update">
+            <h2>LAST UPDATE</h2>
+            <div id="last-update-time">--:--:--</div>
+            <p>Updates every 30 seconds</p>
+        </div>
+        
+        <div class="card">
+            <h2>DEVICE STATUS</h2>
+            <p>Device: <span class="device-id">arduino-01</span></p>
+            <p>API Endpoint: <a href="https://mytemperature-api.free.beeceptor.com" class="beeceptor-link" target="_blank">mytemperature-api.free.beeceptor.com</a></p>
+            <p>Data sending: <span id="status" style="color: #6bcf7f;">Active</span></p>
+        </div>
+        
+        <div class="info">
+            <p>This dashboard displays data from your Arduino with DHT22 sensor.</p>
+            <p>Arduino code sends data to Beeceptor, which logs all requests.</p>
+            <p>GitHub Pages | IoT Project | Made with ❤️</p>
+        </div>
+    </div>
+    
+    <script>
+        // Имитация данных (в реальности будут данные с Arduino через Beeceptor)
+        function updateDashboard() {
+            // Генерируем реалистичные тестовые данные
+            const temperature = (22.0 + Math.random() * 5).toFixed(1);
+            const humidity = (55.0 + Math.random() * 10).toFixed(1);
+            const now = new Date();
+            
+            // Обновляем интерфейс
+            document.getElementById('temperature').textContent = temperature + ' °C';
+            document.getElementById('humidity').textContent = humidity + ' %';
+            document.getElementById('last-update-time').textContent = 
+                now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+            
+            // Лог в консоль
+            console.log('📊 Dashboard updated:', { temperature, humidity, time: now.toLocaleTimeString() });
+            console.log('🔗 Beeceptor URL: https://mytemperature-api.free.beeceptor.com/dashboard');
+            console.log('📱 Your Arduino should send data to the above URL');
+        }
+        
+        // Первое обновление сразу
+        updateDashboard();
+        
+        // Обновляем каждые 30 секунд (как в вашем Arduino коде)
+        setInterval(updateDashboard, 30000);
+        
+        // Для тестирования: также обновляем по клику
+        document.addEventListener('click', function() {
+            updateDashboard();
+        });
+    </script>
+    
+    <!-- Font Awesome для иконок -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>
